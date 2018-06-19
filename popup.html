@@ -1,22 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>ContexTweet</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Context awareness tool for web pages">
+    <meta name="author" content="aaar1n17@soton.ac.uk">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/custom.css">
+
     <script type="text/javascript" src="/libs/jquery-3.3.1.js"></script>
   </head>
-  <body>
-    <header>
+  <body style="min-width: 400px">
+    <header id="masthead">
       <h1>ContexTweet</h1>
     </header>
-    <nav>
-      <span>Links if any, probably useful when we can navigate from/to NERs</span>
+    <nav id="menu">
+      <ul class="options">
+        <li><a class="button" href="#tweets">Tweets</a></li>
+        <li><a class="button" href="#sentiment">Opinion</a></li>
+        <li><a class="button" href="#ners">Keywords</a></li>
+      </ul>
     </nav>
-    <main id="main">
-      <section id="tweets">
-        <h2>Tweets</h2>
-        <div id="tweetContainer"></div>
+    <main id="main" class="container">
+      <section id="tweets" class="row">
+        <h2 class="twelve columns">Tweets</h2>
+        <div id="tweetContainer" class="placeholder twelve columns"></div>
       </section>
-      <!-- TODO: sections for sentiment and NERs -->
+      <section id="sentiment" class="row">
+        <h2 class="twelve columns">Opinion</h2>
+        <div id="sentimentContainer" class="placeholder twelve columns"></div>
+      </section>
+      <section id="ners" class="row">
+        <h2 class="twelve columns">Keywords</h2>
+        <div id="nerContainer" class="placeholder twelve columns"></div>
+      </section>
     </main>
     <footer>Footer, about the project, etc.</footer>
     <script type="text/javascript" src="twitterWidget.js"></script>

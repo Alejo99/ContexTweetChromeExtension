@@ -1,5 +1,5 @@
 var settings = {
-	searchTweetsEndpoint: "http://localhost:65500/tweets/byurl",
+	searchTweetsEndpoint: "http://localhost:65500/tweets/byurl/1",
 	tweetContainerId: "tweetContainer" 
 };
 
@@ -19,12 +19,12 @@ function loadTweets(urls) {
 		accepts: "application/json",
 		contentType: "application/json",
 		data: JSON.stringify(currentUrl),
-		success: function(tweets) {
-			console.log("Tweets found: " + tweets.length)
+		success: function(result) {
+			console.log("Tweets found: " + result.tweets.length)
 			// If there are results
-			if (tweets.length > 0) {
+			if (result.tweets.length > 0) {
 				// Render tweets
-				tweets.forEach(function(tw) {
+				result.tweets.forEach(function(tw) {
 					renderTweet(tw.id)
 				});
 			}
