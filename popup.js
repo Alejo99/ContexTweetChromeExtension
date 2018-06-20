@@ -1,52 +1,71 @@
-var settings = {
-	searchTweetsEndpoint: "http://localhost:65500/tweets/byurl/1",
-	tweetContainerId: "tweetContainer" 
+var endpointSettings = {
+	searchTweetsUrl: "http://localhost:65500/tweets/byurl/",
+	searchTweetsPage: "1",
+	tweetContainerSelector: "#tweetContainer",
+	tweetPaginatorSelector: "#tweetPaginator"
 };
 
 twttr.ready(function() {
 	// Get current active tab url
 	var query = { active: true, currentWindow: true };
-	chrome.tabs.query(query, loadTweets);
+	chrome.tabs.query(query, paginateTweets);
 });
 
-function loadTweets(urls) {
-	var currentUrl = urls[0].url
-	// Send request to backend service
-	console.log("Searching tweets for url " + currentUrl);
+function paginateTweets(urls) {
+	var currentUrl = urls[0].url;
 	jQuery.ajax({
 		type: "POST",
-		url: settings.searchTweetsEndpoint,
+		url: endpointSettings.searchTweetsUrl + endpointSettings.searchTweetsPage,
 		accepts: "application/json",
 		contentType: "application/json",
 		data: JSON.stringify(currentUrl),
 		success: function(result) {
-			console.log("Tweets found: " + result.tweets.length)
-			// If there are results
-			if (result.tweets.length > 0) {
-				// Render tweets
-				result.tweets.forEach(function(tw) {
-					renderTweet(tw.id)
-				});
-			}
+			console.log("Tweets found: " + result.pagingInfo.totalItems);
+			renderPaginator(endpointSettings.tweetPaginatorSelector, endpointSettings.tweetContainerSelector, result.tweets, result.pagingInfo, renderTweet);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log("Error: " + textStatus + " -- " + errorThrown);
-			jQuery("#" + settings.tweetContainerId).append("<p>Sorry, no data for this URL yet. Try again later.</p>")
+			jQuery(endpointSettings.tweetContainerSelector)
+				.append("<p>Sorry, no data for this URL yet. Try again later.</p>");
 		}
 	});
 };
 
-function renderTweet(tweetId) {
-	twttr.widgets.createTweet(
-  		tweetId,
-		document.getElementById(settings.tweetContainerId),
-		{
-			align: 'center',
-			cards: 'hidden',
-			conversation: 'none',
-			width: 350
-		})
-	.then(function (el) {
-		console.log("Tweet rendered")
-	});
+function renderTweet(tweet, containerSelector) {
+	var tweetId = tweet.id;
+	var container = jQuery(containerSelector);
+	if(container.length > 0) {
+		twttr.widgets.createTweet(
+	  		tweetId,
+			container.get(0),
+			{
+				align: 'center',
+				cards: 'hidden',
+				conversation: 'none',
+				width: 350
+			}
+		).then(function (el) {
+			console.log("Tweet #" + tweetId + " rendered");
+		});
+	}
 };
+
+function renderPaginator(paginatorSelector, containerSelector, data, pagingInfo, callback) {
+	var paginator = jQuery(paginatorSelector);
+	if(paginator.length > 0) {
+		paginator.pagination({
+		    dataSource: data,
+		    totalNumber: pagingInfo.totalItems,
+		    pageSize: 3,
+		    className: 'paginationjs-small paginationjs-theme-blue',
+		    showNavigator: true,
+		    formatNavigator: '(<%= totalNumber %> entries)',
+		    callback: function(data, pagination) {
+		    	jQuery(containerSelector).empty();
+		    	data.forEach(function(item) {
+		    		callback(item, containerSelector);
+		    	});
+		    }
+		});
+	}
+}

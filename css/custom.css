@@ -1,5 +1,5 @@
 body {
-	min-width: 400px;
+	min-width: 450px;
 }
 
 /* --- HEADER --- */
@@ -42,4 +42,30 @@ body {
 /* --- SECTIONS --- */
 #main .placeholder {
 	min-height: 30rem;
+}
+
+#main section {
+	margin-bottom: 1rem;
+}
+
+#main section h2 {
+	margin-bottom: .5rem;
+}
+
+/* --- SECTION TWEETS --- */
+#main #tweetContainer .placeholder {
+	min-height: 40rem;
+}
+
+#tweetContainer twitterwidget {
+	margin: .4rem auto !important;
+}
+
+/* --- PAGINATION --- */
+.paginator {
+	margin-bottom: .5rem;
+}
+
+.paginator .paginationjs .paginationjs-pages ul li {
+	margin-bottom: 0;
 }

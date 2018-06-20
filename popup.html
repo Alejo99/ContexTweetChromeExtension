@@ -10,10 +10,12 @@
 
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/pagination.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/custom.css">
 
     <script type="text/javascript" src="/libs/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/libs/pagination.js"></script>
   </head>
   <body style="min-width: 400px">
     <header id="masthead">
@@ -28,7 +30,8 @@
     </nav>
     <main id="main" class="container">
       <section id="tweets" class="row">
-        <h2 class="twelve columns">Tweets</h2>
+        <h2 class="twelve columns">Related tweets</h2>
+        <div id="tweetPaginator" class="paginator twelve columns"></div>
         <div id="tweetContainer" class="placeholder twelve columns"></div>
       </section>
       <section id="sentiment" class="row">
