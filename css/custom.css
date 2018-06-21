@@ -6,6 +6,7 @@ body {
 #masthead {
 	background-color: #1da1f2;
 	border-radius: .5rem .5rem 0 0;
+	position: relative;
 }
 #masthead h1 {
 	padding: 1rem 7.5%;
@@ -14,28 +15,33 @@ body {
 	text-align: center;
 	color: #fff;
 }
+#masthead .logo {
+	position: absolute;
+    top: 0;
+    left: 1rem;
+    width: 6.8rem;
+}
 
 /* --- MENU --- */
 #menu {
-
+	background-color: #dadada;
+	border-radius: 0 0 .5rem .5rem;
 }
-
 #menu .options {
 	text-align: center;
     margin-bottom: 1rem;
 }
-
 #menu .options li {
 	display: inline-block;
     margin: 1rem;
+    width: 27%;
 }
-
 #menu .options li a.button {
 	display: block;
-	min-width: 25%;
 	padding: 0 2rem;
 	margin-bottom: 0;
 	color: #1da1f2;
+	background-color: #fff;
 	text-decoration: none;
 }
 
@@ -43,29 +49,24 @@ body {
 #main .placeholder {
 	min-height: 30rem;
 }
-
 #main section {
 	margin-bottom: 1rem;
 }
-
 #main section h2 {
 	margin-bottom: .5rem;
 }
 
 /* --- SECTION TWEETS --- */
-#main #tweetContainer .placeholder {
-	min-height: 40rem;
+#main #tweetContainer.placeholder {
+	min-height: 35rem;
 }
-
 #tweetContainer twitterwidget {
 	margin: .4rem auto !important;
 }
-
 /* --- PAGINATION --- */
 .paginator {
 	margin-bottom: .5rem;
 }
-
 .paginator .paginationjs .paginationjs-pages ul li {
 	margin-bottom: 0;
 }

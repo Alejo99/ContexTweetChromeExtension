@@ -56,7 +56,7 @@ function renderPaginator(paginatorSelector, containerSelector, data, pagingInfo,
 		paginator.pagination({
 		    dataSource: data,
 		    totalNumber: pagingInfo.totalItems,
-		    pageSize: 3,
+		    pageSize: 2,
 		    className: 'paginationjs-small paginationjs-theme-blue',
 		    showNavigator: true,
 		    formatNavigator: '(<%= totalNumber %> entries)',
