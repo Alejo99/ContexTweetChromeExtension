@@ -33,16 +33,28 @@ body {
 }
 #menu .options li {
 	display: inline-block;
-    margin: 1rem;
-    width: 27%;
+    margin: 1rem .5rem;
+    width: 30%;
 }
 #menu .options li a.button {
 	display: block;
-	padding: 0 2rem;
+	padding: 0 1.25rem;
 	margin-bottom: 0;
 	color: #1da1f2;
 	background-color: #fff;
 	text-decoration: none;
+}
+#menu .options li a.button span[class^='icon-'] {
+	font-size: 1.5rem;
+    vertical-align: text-bottom;
+}
+#menu .options li a.button span.icon-twitter {
+	font-size: 1.8rem;
+}
+
+/* --- MAIN --- */
+#main {
+	width: 85%;
 }
 
 /* --- SECTIONS --- */
@@ -69,4 +81,33 @@ body {
 }
 .paginator .paginationjs .paginationjs-pages ul li {
 	margin-bottom: 0;
+}
+
+/* --- FOOTER --- */
+#footer {
+	width: 100%;
+	padding: 0 5%;
+	background-color: #000;
+	color: #fff;
+}
+#footer .about img {
+	max-width: 60%;
+	margin-bottom: 0;
+} 
+#footer .affiliation img {
+	max-width: 100%;
+	margin-top: 2rem;
+}
+#footer section {
+	padding: 5%;
+	font-size: 1.3rem;
+	text-align: center;
+}
+#footer section * {
+	margin-bottom: 1rem;
+}
+#footer .contact {
+	text-align: center;
+	margin-bottom: 1.5rem;
+	font-size: 1.3rem;
 }

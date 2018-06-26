@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/pagination.css">
+    <link rel="stylesheet" type="text/css" href="css/icomoon.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="css/sticky.css">
@@ -25,14 +26,14 @@
     </header>
     <nav id="menu">
       <ul class="options">
-        <li><a class="button" href="#tweets">Tweets</a></li>
-        <li><a class="button" href="#sentiment">Opinion</a></li>
-        <li><a class="button" href="#ners">Keywords</a></li>
+        <li><a class="button" href="#tweets"><span class="icon-twitter"></span> Tweets</a></li>
+        <li><a class="button" href="#sentiment"><span class="icon-heart"></span> Opinion</a></li>
+        <li><a class="button" href="#ners"><span class="icon-price-tags"></span> Keywords</a></li>
       </ul>
     </nav>
     <main id="main" class="container">
       <section id="tweets" class="row">
-        <h2 class="twelve columns">Related tweets</h2>
+        <h2 class="twelve columns">Tweets</h2>
         <div id="tweetPaginator" class="paginator twelve columns"></div>
         <div id="tweetContainer" class="placeholder twelve columns"></div>
       </section>
@@ -45,9 +46,24 @@
         <div id="nerContainer" class="placeholder twelve columns"></div>
       </section>
     </main>
-    <footer>Footer, about the project, etc.</footer>
-    <script src="sticky.js"></script>
+    <footer id="footer" class="container"><!--Footer, about the project, contact info, etc.-->
+      <div class="row">
+        <section class="about six columns">
+          <img src="images/CT_logo_white.svg" alt="ContexTweet logo in white">
+          <p>ContexTweet (2018) is a Dissertation Project for the degree on MSc Software Engineering.</p>
+        </section>
+        <section class="affiliation six columns">
+          <img src="/images/uos_logo_white.png" alt="University of Southampton">
+          <p>Faculty of Physical Sciences and Engineering</p>
+          <p>Electronics and Computer Science Department</p>
+        </section>
+        <address class="contact twelve columns">
+          Contact <a href="mailto:aaar1n17@soton.ac.uk">Abdon A. Aguilera R.</a> for more information
+        </address>
+      </div>
+    </footer>
+    <script type="text/javascript" src="sticky.js"></script>
     <script type="text/javascript" src="twitterWidget.js"></script>
-    <script src="popup.js"></script>
+    <script type="text/javascript" src="popup.js"></script>
   </body>
 </html>
