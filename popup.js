@@ -1,6 +1,5 @@
 var endpointSettings = {
 	searchTweetsUrl: "http://localhost:65500/tweets/byurl/",
-	searchTweetsPage: "1",
 	tweetContainerSelector: "#tweetContainer",
 	tweetPaginatorSelector: "#tweetPaginator"
 };
@@ -15,13 +14,13 @@ function paginateTweets(urls) {
 	var currentUrl = urls[0].url;
 	jQuery.ajax({
 		type: "POST",
-		url: endpointSettings.searchTweetsUrl + endpointSettings.searchTweetsPage,
+		url: endpointSettings.searchTweetsUrl,
 		accepts: "application/json",
 		contentType: "application/json",
 		data: JSON.stringify(currentUrl),
 		success: function(result) {
-			console.log("Tweets found: " + result.pagingInfo.totalItems);
-			renderPaginator(endpointSettings.tweetPaginatorSelector, endpointSettings.tweetContainerSelector, result.tweets, result.pagingInfo, renderTweet);
+			console.log("Tweets found: " + result.length);
+			renderPaginator(endpointSettings.tweetPaginatorSelector, endpointSettings.tweetContainerSelector, result, renderTweet);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log("Error: " + textStatus + " -- " + errorThrown);
@@ -50,12 +49,12 @@ function renderTweet(tweet, containerSelector) {
 	}
 };
 
-function renderPaginator(paginatorSelector, containerSelector, data, pagingInfo, callback) {
+function renderPaginator(paginatorSelector, containerSelector, data, callback) {
 	var paginator = jQuery(paginatorSelector);
 	if(paginator.length > 0) {
 		paginator.pagination({
 		    dataSource: data,
-		    totalNumber: pagingInfo.totalItems,
+		    totalNumber: data.length,
 		    pageSize: 2,
 		    className: 'paginationjs-small paginationjs-theme-blue',
 		    showNavigator: true,
