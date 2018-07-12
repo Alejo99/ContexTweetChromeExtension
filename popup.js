@@ -5,13 +5,21 @@ var endpointSettings = {
 };
 
 twttr.ready(function() {
+	// Load handlebars templates
+	loadTemplates();
 	// Get current active tab url
 	var query = { active: true, currentWindow: true };
 	chrome.tabs.query(query, paginateTweets);
 });
 
+function loadTemplates() {
+	jQuery.get("templates/tweetUnavailable.html", function(template) {
+		endpointSettings.tweetUnavailableTemplate = Handlebars.compile(template);
+	});
+}
+
 function paginateTweets(urls) {
-	var currentUrl = urls[0].url;
+	var currentUrl = urls[0].url.split('#')[0];
 	jQuery.ajax({
 		type: "POST",
 		url: endpointSettings.searchTweetsUrl,
@@ -24,8 +32,13 @@ function paginateTweets(urls) {
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log("Error: " + textStatus + " -- " + errorThrown);
-			jQuery(endpointSettings.tweetContainerSelector)
-				.append("<p>Sorry, no data for this URL yet. Try again later.</p>");
+			if(jqXHR.status == 404) {
+				jQuery(endpointSettings.tweetContainerSelector)
+					.append("<p>No data for this URL yet. Please, try again later.</p>");
+			} else {
+				jQuery(endpointSettings.tweetContainerSelector)
+					.append("<p>Unexpected server error. Please, try again later.</p>");
+			}
 		}
 	});
 };
@@ -44,6 +57,11 @@ function renderTweet(tweet, containerSelector) {
 				width: 350
 			}
 		).then(function (el) {
+			if(el == null) {
+				//container.append("<div class='unavailable'><p id='" + tweetId + "'>Rendering error, Tweet " + tweetId + " is unavailable.</p></div>")
+				container.append(endpointSettings.tweetUnavailableTemplate({tweetId: tweetId}));
+				console.log("Tweet #" + tweetId + " not available.")
+			}
 			console.log("Tweet #" + tweetId + " rendered");
 		});
 	}

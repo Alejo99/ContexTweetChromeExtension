@@ -75,6 +75,35 @@ body {
 #tweetContainer twitterwidget {
 	margin: .4rem auto !important;
 }
+#tweetContainer .unavailable {
+	position: static;
+    visibility: visible;
+    display: block;
+    transform: rotate(0deg);
+    width: 35rem;
+    margin: .4rem auto;
+    max-width: 100%;
+    min-width: 22rem;
+}
+#tweetContainer .unavailable p {
+	display: block;
+    background: 0 0;
+	overflow: hidden;
+    cursor: pointer;
+    background-color: #fff;
+    margin-bottom: 0;
+    border: .1rem solid #e1e8ed;
+    border-radius: .5rem;
+    max-width: 52rem;
+    padding: 1.05rem 1.75rem;
+    font: normal normal 1.4rem/1.4 Helvetica,Roboto,"Segoe UI",Calibri,sans-serif;
+    color: #1c2022;
+    white-space: initial;
+}
+#tweetContainer .unavailable p:hover {
+	border-color: #ccd6dd;
+}
+
 /* --- PAGINATION --- */
 .paginator {
 	margin-bottom: .5rem;

@@ -23,6 +23,6 @@
       "48": "images/ContexTweet_logo48.png",
       "128": "images/ContexTweet_logo128.png"
     },
-    "content_security_policy": "script-src 'self' https://platform.twitter.com/ https://cdn.syndication.twimg.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://platform.twitter.com/ https://cdn.syndication.twimg.com; object-src 'self'",
     "manifest_version": 2
   }
