@@ -1,4 +1,4 @@
-var endpointSettings = {
+var globalSettings = {
 	searchTweetsUrl: "http://localhost:65500/tweets/byurl/",
 	tweetContainerSelector: "#tweetContainer",
 	tweetPaginatorSelector: "#tweetPaginator"
@@ -14,29 +14,28 @@ twttr.ready(function() {
 
 function loadTemplates() {
 	jQuery.get("templates/tweetUnavailable.html", function(template) {
-		endpointSettings.tweetUnavailableTemplate = Handlebars.compile(template);
+		globalSettings.tweetUnavailableTemplate = Handlebars.compile(template);
 	});
 }
 
 function paginateTweets(urls) {
 	var currentUrl = urls[0].url.split('#')[0];
 	jQuery.ajax({
-		type: "POST",
-		url: endpointSettings.searchTweetsUrl,
+		type: "GET",
+		url: globalSettings.searchTweetsUrl,
 		accepts: "application/json",
-		contentType: "application/json",
-		data: JSON.stringify(currentUrl),
+		data: { url: currentUrl },
 		success: function(result) {
 			console.log("Tweets found: " + result.length);
-			renderPaginator(endpointSettings.tweetPaginatorSelector, endpointSettings.tweetContainerSelector, result, renderTweet);
+			renderPaginator(globalSettings.tweetPaginatorSelector, globalSettings.tweetContainerSelector, result, renderTweet);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log("Error: " + textStatus + " -- " + errorThrown);
 			if(jqXHR.status == 404) {
-				jQuery(endpointSettings.tweetContainerSelector)
+				jQuery(globalSettings.tweetContainerSelector)
 					.append("<p>No data for this URL yet. Please, try again later.</p>");
 			} else {
-				jQuery(endpointSettings.tweetContainerSelector)
+				jQuery(globalSettings.tweetContainerSelector)
 					.append("<p>Unexpected server error. Please, try again later.</p>");
 			}
 		}
@@ -59,7 +58,7 @@ function renderTweet(tweet, containerSelector) {
 		).then(function (el) {
 			if(el == null) {
 				//container.append("<div class='unavailable'><p id='" + tweetId + "'>Rendering error, Tweet " + tweetId + " is unavailable.</p></div>")
-				container.append(endpointSettings.tweetUnavailableTemplate({tweetId: tweetId}));
+				container.append(globalSettings.tweetUnavailableTemplate({tweetId: tweetId}));
 				console.log("Tweet #" + tweetId + " not available.")
 			}
 			console.log("Tweet #" + tweetId + " rendered");
