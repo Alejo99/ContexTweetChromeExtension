@@ -1,0 +1,26 @@
+<div id="urlsWrapper">
+	<table class="u-full-width urls-tbl">
+		<thead>
+			<tr>
+				<th>Other pages that mention "{{namedEntityText}}"</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each urls}}
+				<tr>
+					<td><a href="{{this}}" target="_blank">{{trimString this 80}}</a></td>
+				</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	<span class="icon-cross close-button"></span>
+</div>
+<!--<div id="urlsWrapper">
+	<h3>Other pages that mention "{{namedEntityText}}"</h3>
+	<ul>
+		{{#each urls}}
+			<li><a href="{{this}}">{{trimString this 80}}</a></li>
+		{{/each}}
+	</ul>
+	<span class="icon-cross close-button"></span>
+</div>-->
