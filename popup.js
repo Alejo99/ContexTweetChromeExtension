@@ -3,7 +3,8 @@ var globalSettings = {
 	tweetContainerSelector: "#tweetContainer",
 	tweetCountSelector: "#tweetCount",
 	tweetPaginatorSelector: "#tweetPaginator",
-	tweetOrderBySelector: "#tweetOrderBy",
+	tweetFilterBySelector: "#tweetFilterBy",
+	tweetFilterByValue: "no-filter",
 	searchNersUrl: "http://localhost:65500/namedentities/byurl",
 	nerContainerSelector: "#nersContainer",
 	searchUrlNer: "http://localhost:65500/urls/bynamedentity",
@@ -54,8 +55,11 @@ function setupHandlebars() {
 	jQuery.get("templates/sentimentScore.html", function(template) {
 		globalSettings.sentimentScoreTemplate = Handlebars.compile(template);
 	});
-	jQuery.get("templates/tweetOrderBySelector.html", function(template) {
-		globalSettings.tweetOrderByTemplate = Handlebars.compile(template);
+	jQuery.get("templates/tweetFilterBySelector.html", function(template) {
+		globalSettings.tweetFilterByTemplate = Handlebars.compile(template);
+	});
+	jQuery.get("templates/ctxTwWrapperFooter.html", function(template) {
+		globalSettings.tweetFooterTemplate = Handlebars.compile(template);
 	});
 };
 
@@ -176,9 +180,13 @@ function loadSentiment() {
 
 function renderSentimentScore(sentimentScore) {
 	var container = jQuery(globalSettings.sentimentScoreSelector);
-	var normalizedScore = ((sentimentScore + 1) * 10) / 2;
-	var roundedScore = Math.round(normalizedScore * 100) / 100;
+	var roundedScore = getNormalisedSentimentScore(sentimentScore);
 	container.html(globalSettings.sentimentScoreTemplate({average: roundedScore}));
+}
+
+function getNormalisedSentimentScore(sentimentScore) {
+	var normalizedScore = ((sentimentScore + 1) * 10) / 2;
+	return Math.round(normalizedScore * 100) / 100;
 }
 
 function renderSentimentSlider(sentimentScore) {
@@ -201,7 +209,7 @@ function getSentimentOptions(sentimentScore) {
 		options.pos = true;
 	} else if (sentimentScore >= -0.05) {
 		options.neutral = true;
-	} else if (sentimentScore >= -0.6) {
+	} else if (sentimentScore > -0.6) {
 		options.neg = true;
 	} else {
 		options.veryNeg = true;
@@ -209,20 +217,20 @@ function getSentimentOptions(sentimentScore) {
 	return options
 };
 
-function loadTweets() {
-	// get order by value from selector (use default if selector not found)
-
-	// load tweets ordered by selector value
+function loadTweets(refresh=false) {
+	// get filter by value from selector (use default if selector not found)
+	var filterBy = globalSettings.tweetFilterByValue;
+	// load tweets filtered by selector value
 	jQuery.ajax({
 		type: "GET",
 		url: globalSettings.searchTweetsUrl,
 		accepts: "application/json",
-		data: { url: globalSettings.currentUrl },
+		data: { url: globalSettings.currentUrl, filter: filterBy },
 		success: function(result) {
 			console.log("Tweets found: " + result.length);
 			// show entries and selector
 			jQuery(globalSettings.tweetCountSelector).html("<h3>" + result.length + " entries</h3>");
-			renderTweetOrderBySelector(result.length);
+			if(!refresh) renderTweetFilterBySelector(result.length);
 			renderTweetPaginator(result);
 			
 		},
@@ -230,18 +238,23 @@ function loadTweets() {
 			console.log("Error: " + textStatus + " -- " + errorThrown);
 			if(jqXHR.status == 404) {
 				jQuery(globalSettings.tweetContainerSelector)
-					.append("<p>No tweets for this page yet. Please, try again later.</p>");
+					.append("<p style='text-align: left;'>No tweets for this page yet. Please, try again later.</p>");
 			} else {
 				jQuery(globalSettings.tweetContainerSelector)
-					.append("<p>Unexpected server error. Please, try again later.</p>");
+					.append("<p style='text-align: left;'>Unexpected server error. Please, try again later.</p>");
 			}
 		}
 	});
 };
 
-function renderTweetOrderBySelector(nEntries) {
-	var orderBy = jQuery(globalSettings.tweetOrderBySelector);
-	orderBy.html(globalSettings.tweetOrderByTemplate({entries: nEntries}));
+function renderTweetFilterBySelector(nEntries) {
+	var filterBy = jQuery(globalSettings.tweetFilterBySelector);
+	filterBy.html(globalSettings.tweetFilterByTemplate({entries: nEntries}));
+	//attach change handler
+	filterBy.on("change", "select", function() {
+		globalSettings.tweetFilterByValue = this.value;
+		loadTweets(true);
+	});
 }
 
 function renderTweetPaginator(data, callback) {
@@ -257,9 +270,7 @@ function renderTweetPaginator(data, callback) {
 		    callback: function(data, pagination) {
 		    	jQuery(globalSettings.tweetContainerSelector).empty();
 		    	data.forEach(function(item) {
-		    		//create div for each item in page
 		    		renderTweet(item);
-		    		//add sentiment info to div
 		    	});
 		    }
 		});
@@ -269,10 +280,17 @@ function renderTweetPaginator(data, callback) {
 function renderTweet(tweet) {
 	var tweetId = tweet.id;
 	var container = jQuery(globalSettings.tweetContainerSelector);
-	if(container.length > 0) {
+	//create div for the tweet
+	var div = jQuery("<div/>", {
+		id: "ctx-tw-" + tweetId,
+		class: "ctx-tw-wrapper"
+	});
+	div.appendTo(container);
+	//render tweet inside div
+	if(container.length > 0 && div != null) {
 		twttr.widgets.createTweet(
 	  		tweetId,
-			container.get(0),
+			div.get(0),
 			{
 				align: 'center',
 				cards: 'hidden',
@@ -281,11 +299,41 @@ function renderTweet(tweet) {
 			}
 		).then(function (el) {
 			if(el == null) {
-				container.append(globalSettings.tweetUnavailableTemplate({tweetId: tweetId}));
+				div.html(globalSettings.tweetUnavailableTemplate({tweetId: tweetId}));
 				console.log("Tweet #" + tweetId + " not available.")
 			} else {
+				//add sentiment to div
+				renderTweetSentiment(div, tweet.sentimentScore);
+				//log success
 				console.log("Tweet #" + tweetId + " rendered");
 			}
 		});
 	}
 };
+
+function renderTweetSentiment(div, sentimentScore) {
+	var options = getFooterOptions(sentimentScore);
+	div.append(globalSettings.tweetFooterTemplate(options));
+}
+
+function getFooterOptions(sentimentScore) {
+	var options = {};
+	if (sentimentScore >= 0.6) {
+		options.sentimentClass = "very-pos";
+		options.smileyIcon = "icon-happy";
+	} else if (sentimentScore > 0.05) {
+		options.sentimentClass = "pos";
+		options.smileyIcon = "icon-smile";
+	} else if (sentimentScore >= -0.05) {
+		options.sentimentClass = "neutral";
+		options.smileyIcon = "icon-neutral";
+	} else if (sentimentScore > -0.6) {
+		options.sentimentClass = "neg";
+		options.smileyIcon = "icon-sad";
+	} else {
+		options.sentimentClass = "very-neg";
+		options.smileyIcon = "icon-angry";
+	}
+	options.sentimentScore = getNormalisedSentimentScore(sentimentScore);
+	return options
+}
