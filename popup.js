@@ -34,7 +34,7 @@ function setupHandlebars() {
 		return new Handlebars.SafeString(ret);
 	});
 	Handlebars.registerHelper('replaceStringWhitespaces', function(str, strToReplace) {
-		return new Handlebars.SafeString(str.replace(/ /g, strToReplace));
+		return new Handlebars.SafeString(str.replace(/ /g, strToReplace).replace(/&/g, strToReplace));
 	});
 	// Templates
 	jQuery.get("templates/tweetUnavailable.html", function(template) {
@@ -106,7 +106,7 @@ function renderNamedEntities(namedEntities) {
 
 function enableNamedEntitiesClick(namedEntities) {
 	namedEntities.forEach(function(ne) {
-		jQuery("#kw-" + ne.replace(/ /g, "-")).on("click", function() {
+		jQuery("#kw-" + ne.replace(/ /g, "-").replace(/&/g, "-")).on("click", function() {
 			loadNamedEntityUrls(ne);
 		});
 	});
@@ -238,10 +238,12 @@ function loadTweets(refresh=false) {
 			console.log("Error: " + textStatus + " -- " + errorThrown);
 			if(jqXHR.status == 404) {
 				jQuery(globalSettings.tweetContainerSelector)
-					.append("<p style='text-align: left;'>No tweets for this page yet. Please, try again later.</p>");
+					.html("<p style='text-align: left;'>No tweets were found. Please, try again later or use a different filter.</p>");
+				jQuery(globalSettings.tweetCountSelector).html("<h3>0 entries</h3>");
+				jQuery(globalSettings.tweetPaginatorSelector).empty();
 			} else {
 				jQuery(globalSettings.tweetContainerSelector)
-					.append("<p style='text-align: left;'>Unexpected server error. Please, try again later.</p>");
+					.html("<p style='text-align: left;'>Unexpected server error. Please, try again later.</p>");
 			}
 		}
 	});
